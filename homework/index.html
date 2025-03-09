@@ -2,13 +2,22 @@
 <html>
   <head>
       <title>AJAX</title>
-      <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+      <link rel="stylesheet" href="style.css"></link> 
   </head>
-
   <body>
-    <button onclick="get_users()">get users</button>
-    <ol id="userlist">
-    </ol>
-    <script src="js/index.js"></script>
+    <span id="loader"></span>
+    <div class="container">
+      <ul id="users">
+      </ul>
+      <form id="form" hidden>
+        <label>name</label><br>
+        <input type="text" id="name"/><br>
+        <label>email</label><br>
+        <input type="text" id="email"/>
+        <button type="button" id="edit-button">save</button>
+      </form>
+    </div>
+    <script src="./js/index.js"></script>
   </body>
 </html>

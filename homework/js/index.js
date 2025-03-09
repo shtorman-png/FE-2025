@@ -1,51 +1,84 @@
-const user_list = document.getElementById('userlist');
+const SUCCESS = 200
 
-function create_element(user, index) {
-    const name_tag = document.createElement('input')
-    name_tag.value = user.name
-    const email_tag = document.createElement('input')
-    email_tag.value = user.email
-    const delete_button = document.createElement('button')
-    delete_button.textContent = 'Delete'
-    delete_button.onclick = () => {
-        user_list.removeChild(list_item)
-        fetch(`https://jsonplaceholder.typicode.com/users/${index}`, {
-            method: 'DELETE'
-          })
-    }
-    const edit_button = document.createElement('button')
-    edit_button.textContent = 'Edit'
-    edit_button.onclick = () => {
-        update_user(index, name_tag.value, email_tag.value)
-    }
-    const list_item = document.createElement('li')
-    list_item.append(name_tag, email_tag, delete_button, edit_button)
-    user_list.appendChild(list_item)
+const users = document.getElementById('users')
+const form = document.getElementById('form')
+const nameInput = document.getElementById('name')
+const emailInput = document.getElementById('email')
+const loader = document.getElementById('loader')
+
+function startLoader() {
+    loader.className = 'show' 
+}
+function stopLoader() {
+    loader.className = '' 
 }
 
-window.get_users = function get_users() {
-    user_list.innerHTML = ''
-    fetch('https://jsonplaceholder.typicode.com/users')
-    .then((response) => response.json())
-    .then((json) => {
-        for (let idx = 0; idx < json.length; idx++) {
-            const user = json[idx]
-            create_element(user, idx)
-        }
-    });
-}
+let focused
 
-function update_user(index, name, email) {
-    fetch(`https://jsonplaceholder.typicode.com/users/${index + 1}`, {
+document.getElementById('edit-button').onclick = function edit_user() {
+    startLoader()
+    fetch(`https://jsonplaceholder.typicode.com/users/${focused.user.id}`, {
         method: 'PUT',
         body: JSON.stringify({
-            id: index + 1,
-            name,
-            email
+            id: focused.user.id,
+            name: nameInput.value,
+            email: emailInput.value
         }),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8'
-        }
-      })
+        headers: {'Content-type': 'application/json; charset=UTF-8'}})
+        .then(response => response.json())
+        .then(json => {
+            focused.user.name = json.name
+            focused.user.email = json.email
+            focused.name.innerText = json.name
+            focused.email.innerText = json.email
+            stopLoader()
+        })
+
+    form.hidden = true
 }
 
+function create_user(user) {
+    const item = document.createElement('li');
+     
+    const name = document.createElement('div')
+    name.innerText = user.name
+    
+    const email = document.createElement('div')
+    email.innerText = user.email
+    
+    const editButton = document.createElement('button')
+    editButton.className = 'edit'
+    editButton.innerText = 'edit'
+    editButton.onclick = () => {
+        focused = {name, email, user}
+        nameInput.value = user.name
+        emailInput.value = user.email
+        form.hidden = false
+    }
+
+    const deleteButton = document.createElement('button')
+    deleteButton.innerText = 'delete'
+    deleteButton.className = 'delete'
+    deleteButton.onclick = () => {
+        startLoader()
+        fetch(`https://jsonplaceholder.typicode.com/users/${user.id}`, {method: 'DELETE'})
+        .then(response => {
+            if (response.status === SUCCESS) {
+                users.removeChild(item)
+                form.hidden = true
+            }
+            stopLoader()
+        })
+    }
+
+    item.append(name, email, editButton, deleteButton)
+    users.append(item)
+}
+
+fetch('https://jsonplaceholder.typicode.com/users')
+    .then(response => response.json())
+    .then(json => {
+        for (const user of json) {
+            create_user(user)
+        }
+    })
