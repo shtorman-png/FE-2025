@@ -1,0 +1,69 @@
+#container {
+    justify-content: center;
+    gap: 20px;
+}
+
+#users {
+    float: left;
+    margin-left: 35%;
+    width: 20%;
+}
+
+#users li {
+    padding: 10px;
+    border: 1px solid black;
+    position: relative;
+    list-style-type: none;
+    background-color: white;
+}
+
+#users li button {
+    display: none;
+    position: absolute;
+    right: 10px;
+}
+
+#users li:hover button {
+    display: block;
+}
+
+#users li .edit {
+    top: 10px;
+}
+#users li .delete {
+    top: 35px;
+}
+
+#form {
+    float: left;
+    padding-left: 5%;
+    margin-top: 20%;
+}
+
+#loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid grey;
+    border-bottom-color: #181818;
+    border-radius: 50%;
+    margin-left: 45%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    visibility: hidden;;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#loader.show {
+    visibility: visible;
+}
+
+
